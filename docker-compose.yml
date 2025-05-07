@@ -1,16 +1,27 @@
 services:
-  app:
+  belajar-laravel:
     build: .
+    container_name: belajar-laravel
     volumes:
       - .:/var/www/html
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.myapp.rule=Host(`myapp.localhost`)"
-      - "traefik.http.routers.myapp.entrypoints=websecure"
-      - "traefik.http.routers.myapp.tls=true"
-      - "traefik.http.routers.myapp.tls.certresolver=default"
+    environment:
+      - DB_connection=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=belajar_laravel_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=rootpassword
     networks:
       - traefik
+      - db-docker_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.belajar-laravel.rule=Host(`belajar-laravel.local`)"
+      - "traefik.http.routers.belajar-laravel.entrypoints=websecure"
+      - "traefik.http.routers.belajar-laravel.tls=true"
+      - "traefik.http.services.belajar-laravel.loadbalancer.server.port=80"
 networks:
   traefik:
+    external: true
+  db-docker_default:
     external: true
